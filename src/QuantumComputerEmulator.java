@@ -218,7 +218,7 @@ public class QuantumComputerEmulator {
         }
 
         BorderPane root = new BorderPane();
-		Scene scene = new Scene(root,800,400);
+		Scene scene = new Scene(root,800,450);
         VBox qubitLayer = new VBox(); // the qubit layer vbox contains the entire circuit 
         qubitLayer.setPadding(new Insets(10,20,10,20));
         qubitLayer.setAlignment(Pos.TOP_LEFT);
