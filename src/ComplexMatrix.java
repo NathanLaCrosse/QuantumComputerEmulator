@@ -312,7 +312,7 @@ public class ComplexMatrix {
     public static boolean isUnitary(ComplexMatrix a) throws Exception {
         exitIfNotSquareMatrix(a);
         ComplexMatrix i = findIdentityMatrix(a.matrix.length);
-        return ComplexMatrix.matrixMultiply(a, ComplexMatrix.adjoint(a)).equals(i);
+        return ComplexMatrix.matrixMultiply(ComplexMatrix.adjoint(a.clone()), a).equals(i);
     }
 
     /**

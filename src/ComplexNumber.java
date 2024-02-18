@@ -45,7 +45,7 @@ class ComplexNumber {
     public boolean equals(Object o) {
         if(!(o instanceof ComplexNumber)) return false;
         ComplexNumber c = (ComplexNumber)o;
-        return realPart == c.realPart && imaginaryPart == c.imaginaryPart;
+        return realPart.equals(c.realPart) && imaginaryPart.equals(c.imaginaryPart);
     }
 
     /**

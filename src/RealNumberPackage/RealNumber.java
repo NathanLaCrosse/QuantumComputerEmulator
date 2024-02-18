@@ -66,4 +66,10 @@ public abstract class RealNumber {
         if(s.equals("-")) {s+="1";}
         return new RealDouble(Double.parseDouble(s));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof RealNumber)) return false;
+        return valueOf() == ((RealNumber)o).valueOf();
+    }
 }

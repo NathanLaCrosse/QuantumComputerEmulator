@@ -27,13 +27,12 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        
 
         QuantumComputerEmulator.build(primaryStage, this);
 
         //commenting the below method back in and commenting out the above will instead run a matrix calculator
 
-        //buildCalculator(primaryStage);
+        //matrixCalculator(primaryStage);
     }
 
     private void buildCalculator(Stage primaryStage) {
@@ -285,7 +284,7 @@ public class App extends Application {
 
     // Array full of all string representations of the operators
     private static String[] ops = {
-        "Addition*","Subtraction*","Matrix Mult*","Transpose","Adjoint","Inner Product*","Norm","Tensor Product*","Normalize Vector","Expected Value*","Variance*"};
+        "Addition*","Subtraction*","Matrix Mult*","Transpose","Adjoint","Inner Product*","Norm","Tensor Product*","Normalize Vector","Expected Value*","Variance*","Is Unitary"};
     // Array full of all the operations can be selected
     private static MatrixOperation[] matrixOps = {
         new MatrixOperation<ComplexMatrix>() { //addition
@@ -340,6 +339,10 @@ public class App extends Application {
         },new MatrixOperation<ComplexNumber>() { //variance
             @Override public ComplexNumber operate(ComplexMatrix a, ComplexMatrix b) throws Exception {
                 return ComplexMatrix.variance(a, b);
+            }
+        },new MatrixOperation<ComplexNumber>() {
+            @Override public ComplexNumber operate(ComplexMatrix a, ComplexMatrix b) throws Exception {
+                return ComplexMatrix.isUnitary(a) ? new ComplexNumber(1,0) : new ComplexNumber();
             }
         }
     };
