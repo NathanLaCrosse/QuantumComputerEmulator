@@ -31,33 +31,17 @@ import javafx.stage.Stage;
 
 /***** Quantum Computer Emulator!
  * Guide to this program and how to work on it
- * As you can see, this program emulates a quantum computer for purposes of research. This little guide will serve as a
- * reminder to how to add new things to this program and what to work on incase of long breaks between development.
  * 
- * Reminder: If you place a controlled gate on a column, you can only have that controlled gate and identity gates, as the
- * algorithm that creates its matrix is very different than the one normally used.
+ * This program allows the user to drag and drop quantum gates onto a quantum circuit to build simple programs. You can
+ * also create your own gates which are made through unitary matrices. Fractional inputs and complex inputs are accepted
+ * such as 1dsqrt2 + 5i (1/sqrt(2) + 5i)
+ * 
+ * If you place a control point in a column, it will only accept up to 2 reference points past that. This gates can only be
+ * reset by hitting the reset buttons at the top of each column. Only 1 control point can be on each column. This can be used
+ * to create Controlled-NOT and Toffoli gates.
  * 
  * If you want to change the number of inputs or gates, we have some handy final variables for that! Just look at
  * NUM_GATE_NODES and NUM_INPUTS
- * 
- * Adding a new gate: Single Qubit
- *    - Add a new gateType in the gateTypes String
- *    - Load a new image into gateIcons
- *    - Fill out its stringRepresentation of logic
- *    - Create a new object in dragGate so you can drag it onto the computer
- *    - You're done!
- * Adding a new gate: Multi-Qubit
- *    - In the gateTypes array, name the new gate in the format GATENAME-Base-#OFQUBITS
- *    - Should work the same as other gates from here on out
- *    - NOTE: custom colors and appearance are not supported yet
- * Adding a new gate: Controlled Gate
- *     - This should be avoided at all costs as this program was designed for just Controlled-NOT and Toffoli gates.
- *     - If you are planning to add a new Controlled Gate, I would recommend making an alternate gate to the ControlPoint, and let
- *       users place ReferencePoints if this alternate point is presents, and then have a new boolean list like hasControlGate 
- *       except for this new kind of gate
- *     - Also note the the sprite finding program works differently for the controlled gates, so you will have to modify that in the 
- *       GateNode's code
- * 
  * 
  * @author Nathan LaCrosse
  * @version 2/18/2024
@@ -67,8 +51,8 @@ public class QuantumComputerEmulator {
     public static Image gupImage, backgroundImage, addNewImage, defaultIcon;
     public static Image[] seperatingLines;
 
-    public final static int NUM_GATE_NODES = 5;
-    public final static int NUM_INPUTS = 5;
+    public final static int NUM_GATE_NODES = 5; // default is 5
+    public final static int NUM_INPUTS = 5; // default is 5
 
     private static int horizontalOffset = 0, gateBarOffset = 0;
 
@@ -773,7 +757,6 @@ class MeasurementGate extends GateNode {
         a.show();
 
         System.out.println("Observed Value: " + observedValue);
-        System.out.println(circuit);
     }
 
     private ComplexMatrix obtainGateMatrix(GateNode g) {

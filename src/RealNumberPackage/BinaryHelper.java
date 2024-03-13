@@ -59,11 +59,49 @@ public class BinaryHelper {
         return change;
     }
 
+    /*
+     * Adds two arrays of bits together, overflows 
+     */
+    public static int[] addBitArrs(int[] bitAr1, int[] bitAr2) {
+        if(bitAr1.length != bitAr2.length) {System.out.println("Bit arrays improper size!"); return null;}
+
+        int[] newAr = new int[bitAr1.length];
+        int carry = 0;
+        for(int i = newAr.length - 1; i >= 0; i--) {
+            int sum = bitAr1[i] + bitAr2[i] + carry;
+            carry = sum > 1 ? 1 : 0;
+            newAr[i] = sum % 2;
+        }
+
+        return newAr;
+    }
+
+    /*
+     * Performs the XOR operation on the two bit arrays piecewise
+     */
+    public static int[] xorBitArrs(int[] bitAr1, int[] bitAr2) {
+        if(bitAr1.length != bitAr2.length) {System.out.println("Bit arrays improper size!"); return null;}
+
+        int[] newAr = new int[bitAr1.length];
+        for(int i = 0; i < bitAr1.length; i++) {
+            newAr[i] = (bitAr1[i] == 1) ^ (bitAr2[i] == 1) ? 1 : 0;
+        }
+
+        return newAr;
+    }
+
     public static void main(String[] args) {
-        int[] bin = convertNumberToBinaryArray(10);
-        bin = fitBitArrayToSize(bin, 10);
-        for(int i = 0; i < bin.length; i++)
-            System.out.print(bin[i] + " ");
+        int[] b1 = {1, 0, 1};
+        int[] b2 = {1, 1, 1};
+
+        int[] xor = xorBitArrs(b1, b2);
+
+        printAr(xor);
+    }
+
+    private static void printAr(int[] ar) {
+        for(int i = 0; i < ar.length; i++)
+            System.out.print(ar[i] + " ");
     }
 }
  
