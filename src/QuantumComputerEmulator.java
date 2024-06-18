@@ -59,7 +59,7 @@ public class QuantumComputerEmulator {
     public static Image[] gateIcons;
     public static Image[] connectionIcons;
 
-    public static String[] gateTypes = {"Identity","Pauli-X","Pauli-Y","Pauli-Z","Hadamard","GROVERALG-Base-5","INVERSIONMEAN-Base-4"};
+    public static String[] gateTypes = {"Identity","Pauli-X","Pauli-Y","Pauli-Z","Hadamard","GROVERALG-Base-5","INVERSIONMEAN-Base-4","INVMEAN-Base-3"};
     public static ComplexMatrix[] gateMatrices;
     public static String[][][] stringRepresentations = {
         {
@@ -83,7 +83,8 @@ public class QuantumComputerEmulator {
             {"1dsqrt2","-1dsqrt2"}
         },
         buildPickOutMatrix(4, new int[][]{{1,1,1,1}}),
-        buildInversionAboutMeanMatrix(4)
+        buildInversionAboutMeanMatrix(4),
+        buildInversionAboutMeanMatrix(3)
     };
 
     public static Image[] helperSprites;
@@ -130,7 +131,8 @@ public class QuantumComputerEmulator {
             new DraggableGate("ReferencePoint",new Image(a.getClass().getResourceAsStream("Images/ReferencePoint.png"))),
             new DraggableGate("ControlPoint",new Image(a.getClass().getResourceAsStream("Images/ControlPoint.png"))),
             new DraggableGate("GROVERALG-Base-5", defaultIcon),
-            new DraggableGate("INVERSIONMEAN-Base-4", defaultIcon)
+            new DraggableGate("INVERSIONMEAN-Base-4", defaultIcon),
+            new DraggableGate("INVMEAN-Base-3", defaultIcon)
         };
 
         gateMatrices = new ComplexMatrix[stringRepresentations.length];
@@ -757,6 +759,7 @@ class MeasurementGate extends GateNode {
         a.show();
 
         System.out.println("Observed Value: " + observedValue);
+        System.out.println(probText);
     }
 
     private ComplexMatrix obtainGateMatrix(GateNode g) {
