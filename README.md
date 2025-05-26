@@ -1,3 +1,6 @@
+# Notice
+I'm currently coming back to this project to spruce it up and make this readme more presentable (as well as the code). The tutorial has been added, with more to come. Stay tuned.
+
 # Quantum Computer Emulator
 
 This project runs a quantum computing emulator that allows you to visualize and create quantum circuits. Along with this, there are a few other projects I made along the way in here, such as a double slit experiment and a matrix calculator.
