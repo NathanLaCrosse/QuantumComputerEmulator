@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import ComplexNumberPackage.ComplexMatrix;
 import ComplexNumberPackage.ComplexNumber;
 import RealNumberPackage.*;
+import EmulatorApplicationHelpers.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -49,7 +50,7 @@ import javafx.stage.Stage;
  * @version 2/18/2024
  */
 
-public class QuantumComputerEmulator {
+public class QuantumComputerEmulator implements QCEInterface {
     public static Image backgroundImage, addNewImage, defaultIcon;
     public static Image[] seperatingLines;
 
@@ -95,33 +96,53 @@ public class QuantumComputerEmulator {
         App.main(args);
     }
 
-    public static void build(Stage primaryStage, Application a) throws Exception {
-        addNewImage = new Image(a.getClass().getResourceAsStream("Images/addNew.png"));
-        backgroundImage = new Image(a.getClass().getResourceAsStream("Images/greySquare.png"));
-        defaultIcon = new Image(a.getClass().getResourceAsStream("Images/F2Icon.png"));
+    private ArrayList<ArrayList<GateNode>> nodes = new ArrayList<>();
+    public ArrayList<ArrayList<GateNode>> getNodes() {
+        return nodes;
+    }
+    private ArrayList<ArrayList<Connector>> connectors = new ArrayList<>();
+    public ArrayList<ArrayList<Connector>> getConnectors() {
+        return connectors;
+    }
+
+    //these two arraylists help build controlled gates. hasControlGate tells if there is a control node in the
+    //column it is in, numReferences notes how many reference points are in said column.
+    private ArrayList<Boolean> hasControlGate = new ArrayList<>();
+    public ArrayList<Boolean> getIfHasControlGate() {
+        return hasControlGate;
+    }
+    private ArrayList<Integer> numReferences = new ArrayList<>();
+    public ArrayList<Integer> getNumReferences() {
+        return numReferences;
+    }
+
+    public QuantumComputerEmulator(Stage primaryStage, Application a) throws Exception {
+        addNewImage = new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/addNew.png"));
+        backgroundImage = new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/greySquare.png"));
+        defaultIcon = new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/F2Icon.png"));
 
         seperatingLines = new Image[] {
-            new Image(a.getClass().getResourceAsStream("Images/seperatingLine.png")),
-            new Image(a.getClass().getResourceAsStream("Images/horizontalSeperatingLine.png"))
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/seperatingLine.png")),
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/horizontalSeperatingLine.png"))
         };
         gateIcons = new Image[]{
-            new Image(a.getClass().getResourceAsStream("Images/measurementGate.png")),
-            new Image(a.getClass().getResourceAsStream("Images/ReferencePoint.png")),
-            new Image(a.getClass().getResourceAsStream("Images/ControlPoint.png")),
-            new Image(a.getClass().getResourceAsStream("Images/IdentityGate.png")),
-            new Image(a.getClass().getResourceAsStream("Images/XGate.png")),
-            new Image(a.getClass().getResourceAsStream("Images/YGate.png")),
-            new Image(a.getClass().getResourceAsStream("Images/ZGate.png")),
-            new Image(a.getClass().getResourceAsStream("Images/HadamardGate.png"))
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/measurementGate.png")),
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/ReferencePoint.png")),
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/ControlPoint.png")),
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/IdentityGate.png")),
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/XGate.png")),
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/YGate.png")),
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/ZGate.png")),
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/HadamardGate.png"))
         };
         connectionIcons = new Image[]{
-            new Image(a.getClass().getResourceAsStream("Images/emptyConnection.png")),
-            new Image(a.getClass().getResourceAsStream("Images/connection.png"))
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/emptyConnection.png")),
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/connection.png"))
         };
         helperSprites = new Image[] {
-            new Image(a.getClass().getResourceAsStream("Images/gateTop.png")),
-            new Image(a.getClass().getResourceAsStream("Images/gateConnector.png")),
-            new Image(a.getClass().getResourceAsStream("Images/gateBottom.png"))
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/gateTop.png")),
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/gateConnector.png")),
+            new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/gateBottom.png"))
         };
         DraggableGate[] dragGates = {
             new DraggableGate("Identity", gateIcons[3]),
@@ -129,8 +150,8 @@ public class QuantumComputerEmulator {
             new DraggableGate("Pauli-Y", gateIcons[5]),
             new DraggableGate("Pauli-Z", gateIcons[6]),
             new DraggableGate("Hadamard", gateIcons[7]),
-            new DraggableGate("ReferencePoint",new Image(a.getClass().getResourceAsStream("Images/ReferencePoint.png"))),
-            new DraggableGate("ControlPoint",new Image(a.getClass().getResourceAsStream("Images/ControlPoint.png"))),
+            new DraggableGate("ReferencePoint",new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/ReferencePoint.png"))),
+            new DraggableGate("ControlPoint",new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/ControlPoint.png"))),
             new DraggableGate("GROVERALG-Base-5", defaultIcon),
             new DraggableGate("INVERSIONMEAN-Base-4", defaultIcon),
             new DraggableGate("INVMEAN-Base-3", defaultIcon)
@@ -167,14 +188,6 @@ public class QuantumComputerEmulator {
             qbuttons.add(new QubitButton());
         }
 
-        ArrayList<ArrayList<GateNode>> gates = new ArrayList<>();
-        ArrayList<ArrayList<Connector>> connectors = new ArrayList<>();
-
-        //these two arraylists help build controlled gates. hasControlGate tells if there is a control node in the
-        //column it is in, numReferences notes how many reference points are in said column.
-        ArrayList<Boolean> hasControlGate = new ArrayList<>();
-        ArrayList<Integer> numReferences = new ArrayList<>();
-
         for(int i = 0; i < NUM_GATE_NODES; i++) {
             hasControlGate.add(false);
             numReferences.add(0);
@@ -185,14 +198,14 @@ public class QuantumComputerEmulator {
         clearBox.setTranslateX(130+horizontalOffset);
         clearBox.setSpacing(90);
         for(int i = 0; i < NUM_GATE_NODES; i++) {
-            Clearer c = new Clearer(i, gates, connectors, hasControlGate, numReferences);
+            Clearer c = new Clearer(i, this);
             clearBox.getChildren().add(c.getButton());
         }
         qubitLayer.getChildren().add(clearBox);
 
         //adds alll the gate nodes, connectors and measurement gates
         for(int i = 0; i < qbuttons.size(); i++) {
-            gates.add(new ArrayList<GateNode>());
+            nodes.add(new ArrayList<GateNode>());
 
             //set up this row
             HBox horizontalLayer = new HBox();
@@ -205,13 +218,13 @@ public class QuantumComputerEmulator {
                 //create linking line
                 horizontalLayer.getChildren().add(createCenteredLine(100));
                 //make the node
-                GateNode gn = new GateNode(new int[]{i,k},gates,connectors,hasControlGate,numReferences);
+                GateNode gn = new GateNode(new int[]{i,k},this);
                 horizontalLayer.getChildren().add(gn.getView());
-                gates.get(i).add(gn);
+                nodes.get(i).add(gn);
             }
             //add the measurement gate on
             horizontalLayer.getChildren().add(createCenteredLine(100));
-            MeasurementGate mg = new MeasurementGate(qbuttons, gates, hasControlGate, numReferences);
+            MeasurementGate mg = new MeasurementGate(qbuttons, nodes, hasControlGate, numReferences);
             horizontalLayer.getChildren().add(mg.getView());
 
             //add whole row of qubit and gates to the VBox
@@ -277,7 +290,7 @@ public class QuantumComputerEmulator {
         });
 
         //pull everything together and set to root
-        MeasurementGate mg = new MeasurementGate(qbuttons, gates, hasControlGate, numReferences);
+        MeasurementGate mg = new MeasurementGate(qbuttons, nodes, hasControlGate, numReferences);
         gateNavButtons.getChildren().addAll(mg.getView(),navLeft,navRight);
         gateArea.getChildren().addAll(gateNavButtons, horizontalLine, gateContainer);
         gateArea.setAlignment(Pos.BOTTOM_LEFT);
@@ -287,7 +300,7 @@ public class QuantumComputerEmulator {
 		primaryStage.setScene(scene);
 
         //loading the icon image of the Bloch Sphere
-        Image img = new Image(a.getClass().getResourceAsStream("Images/blochSphere.png"));
+        Image img = new Image(a.getClass().getResourceAsStream("EmulatorApplicationHelpers/Sprites/blochSphere.png"));
         primaryStage.getIcons().add(img);
 
 		primaryStage.show();
@@ -309,7 +322,7 @@ public class QuantumComputerEmulator {
     /**
      * Helper method to clear a column of all gates and connections
      */
-    protected static void clearColumn(int col, ArrayList<ArrayList<GateNode>> nodes, ArrayList<ArrayList<Connector>> connectors, ArrayList<Boolean> hasControlGate, ArrayList<Integer> numReferences) {
+    public void clearColumn(int col) {
         for(int i = 0; i < nodes.size(); i++) {
             nodes.get(i).get(col).setQuantumGate("Identity");
             nodes.get(i).get(col).setImageViaGate();
@@ -318,7 +331,7 @@ public class QuantumComputerEmulator {
         hasControlGate.set(col, false);
         numReferences.set(col, 0);
     }
-    public static int indexInGateTypes(String type) {
+    public int indexInGateTypes(String type) {
         for(int i = 0; i < gateTypes.length; i++) {
             if(gateTypes[i].equals(type)) {return i;}
         }
@@ -426,196 +439,7 @@ public class QuantumComputerEmulator {
         return a;
     }
 }
-/*
- * Instances of this class create buttons the user can interact with to control the input values of the qubits.
- * Inside this class, it stores both the button the user will interact with and the current stored value of the qubit
- */
-class QubitButton {
-    private Button b;
-    private boolean state; // false = |0>    true = |1>
-    
-    public QubitButton() {
-        state = false;
-        b = new Button("|0>");
-        b.setMinWidth(35);
-        b.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent arg0) {
-                changeState();
-            } 
-        });
-    }
-    private void changeState() {
-        state = !state;
-        b.setText(state ? "|1>" : "|0>");
-    }
-    public Button getButton() {
-        return b;
-    }
-    public ComplexMatrix retrieveStateMatrix() {
-        String[] s = {"0","0"};
-        int changeDex = state ? 1 : 0;
-        s[changeDex] = "1";
-        return new ComplexMatrix(s);
-    }
-}
-/*
- * This class represents a node where on which a quantum gate can be placed.
- */
-class GateNode {
-    private String quantumGate;
-    private ImageView view;
 
-    //most of this constructor is actually setting up the drag+drop procedure, thus the long input list
-    /*
-     * @param position - inputted row,col of the node in the nodes arraylist
-     */
-    public GateNode(String gate, Image icon, boolean canDropOn, int[] position, ArrayList<ArrayList<GateNode>> nodes, ArrayList<ArrayList<Connector>> connectors, ArrayList<Boolean> hasControlGate, ArrayList<Integer> numReferences) {
-        quantumGate = gate;
-        view = new ImageView(icon);
-
-        //sets up the drop action so a new gate can be placed over this one
-        //info about the drag and drop procedure can be found at https://docs.oracle.com/javase/8/javafx/events-tutorial/drag-drop.htm#CHDJFJDH 
-        if(canDropOn) {
-            //this forces our image to our gate only if we are not a measurement gate - lazy fix
-            setImageViaGate();
-
-            view.setOnDragOver(new EventHandler<DragEvent>() {
-                @Override
-                public void handle(DragEvent arg0) {
-                    if(arg0.getGestureSource() != view && arg0.getDragboard().hasString()) {
-                        String s = arg0.getDragboard().getString();
-
-                        //deny placement if there are already too many reference/control points
-
-                        boolean isControl = s.equals("ControlPoint");
-                        boolean isReference = s.equals("ReferencePoint");
-
-                        //if this gate uses several lines, find the highest point it can occupy (lowest index)
-                        int highestOccupiablePoint = 0;
-                        if(s.indexOf("Base") != -1) {
-                            highestOccupiablePoint = 1; // incase there is no index, base size is 2 qubits
-                            String numSpot = s.substring(s.indexOf("Base")+5).trim();
-                            if(!numSpot.equals("")) {
-                                highestOccupiablePoint = Integer.parseInt(numSpot) - 1;
-                            }
-                        }
-
-                        if(((isControl || !isReference) && hasControlGate.get(position[1])) || (isReference && (numReferences.get(position[1]) == 2||!hasControlGate.get(position[1])))
-                                || (s.indexOf("Base") != -1 && position[0] < highestOccupiablePoint) || quantumGate.contains("Top") || quantumGate.contains("Connector") || quantumGate.contains("Base")) {
-
-                        }else {
-                            arg0.acceptTransferModes(TransferMode.COPY);
-                        }
-                    }
-                    arg0.consume();
-                }
-            });
-
-            view.setOnDragDropped(new EventHandler<DragEvent>() {
-                @Override
-                public void handle(DragEvent arg0) {
-                    Dragboard db = arg0.getDragboard();
-                    boolean success = false;
-                    if(db.hasString()) {
-                        if(db.getString().equals("ControlPoint")) {
-                            //wipe the column first to make sure the user didn't already put something there
-                            QuantumComputerEmulator.clearColumn(position[1], nodes, connectors, hasControlGate, numReferences);
-                            hasControlGate.set(position[1], true);
-                        }else if(db.getString().equals("ReferencePoint")) {
-                            numReferences.set(position[1], numReferences.get(position[1]) + 1);
-                            //since a reference node placement imples there is already a control, enable connections to control
-                            enableConnectionsToControl(position, nodes, connectors);
-                        }
-
-                        setQuantumGate(db.getString());
-                        setImageViaGate();
-                        success = true;
-
-                        //change above gates if placing a multi-qubit gate
-                        if(db.getString().indexOf("Base") != -1) {
-                            //extract a number if there is one after base
-                            int numWipesNeeded = 1;
-                            String numSpot = db.getString().substring(db.getString().indexOf("Base")+5).trim();
-                            if(!numSpot.equals("")) {
-                                numWipesNeeded = Integer.parseInt(numSpot) - 1;
-                            }
-
-                            for(int i = 1; i <= numWipesNeeded; i++) {
-                                String typeNode = i == numWipesNeeded ? "Top" : "Connector";
-                                nodes.get(position[0]-i).get(position[1]).setQuantumGate(typeNode);
-                                nodes.get(position[0]-i).get(position[1]).setImageViaGate();
-                                connectors.get(position[0]-i).get(position[1]).setImage(QuantumComputerEmulator.helperSprites[1]);
-                            }
-                        }
-                    }
-                    arg0.setDropCompleted(success);
-                    arg0.consume();
-                }
-            });
-        }
-    }
-    public GateNode(int[] position, ArrayList<ArrayList<GateNode>> nodes, ArrayList<ArrayList<Connector>> connectors, ArrayList<Boolean> hasControlGate, ArrayList<Integer> numReferences) {
-        this("Identity", QuantumComputerEmulator.gateIcons[1],true, position, nodes, connectors, hasControlGate, numReferences);
-    }
-
-    public ImageView getView() {
-        return view;
-    }
-
-    public String getQuantumGate() {
-        return quantumGate;
-    }
-    public void setQuantumGate(String gate) {
-        quantumGate = gate;
-    }
-
-    public void setImageViaGate() {
-        if(quantumGate.indexOf("Top") != -1) {
-            view.setImage(QuantumComputerEmulator.helperSprites[0]);
-            return;
-        }else if(quantumGate.indexOf("Base") != -1) {
-            view.setImage(QuantumComputerEmulator.helperSprites[2]);
-            return;
-        }else if(quantumGate.indexOf("Connector") != -1) {
-            view.setImage(QuantumComputerEmulator.helperSprites[1]);
-            return;
-        }
-
-        int dex;
-        if(quantumGate.equals("ReferencePoint")) {
-            dex = 1;
-        }else if(quantumGate.equals("ControlPoint")) {
-            dex = 2;
-        }else {
-            dex = QuantumComputerEmulator.indexInGateTypes(quantumGate) + 3;
-        }
-        view.setImage(QuantumComputerEmulator.gateIcons[dex]);
-    }
-
-    /*
-     * This method is called when a reference node is placed. This method enables all connectors on the path to the control
-     */
-    private void enableConnectionsToControl(int[] position, ArrayList<ArrayList<GateNode>> nodes, ArrayList<ArrayList<Connector>> connectors) {
-        int controlRow = 0;
-        for(int i = 0; i < nodes.size(); i++) {
-            if(nodes.get(i).get(position[1]).getQuantumGate().equals("ControlPoint")) {
-                controlRow = i;
-            }
-        }
-        boolean down = true;
-        if(position[0] > controlRow) {down = false;}
-        int dex = position[0];
-        while(down && dex < controlRow) {
-            connectors.get(dex).get(position[1]).showConnection();
-            dex++;
-        }
-        while(!down && dex > controlRow) {
-            dex--;
-            connectors.get(dex).get(position[1]).showConnection();
-        }
-    }
-}
 /*
  * This class handles the specialized measurement gate. This gate converts the whole circuit into a matrix in order to perform
  * the measurement action.
@@ -627,7 +451,7 @@ class MeasurementGate extends GateNode {
     private ArrayList<Integer> numReferences;
 
     public MeasurementGate(ArrayList<QubitButton> inputs, ArrayList<ArrayList<GateNode>> gates, ArrayList<Boolean> hasControlGate, ArrayList<Integer> numReferences) {
-        super("Measurement", QuantumComputerEmulator.gateIcons[0],false,null,null,null,null,null);
+        super("Measurement", QuantumComputerEmulator.gateIcons[0],false,null,null);
         this.inputs = inputs;
         this.gates = gates;
         this.hasControlGate = hasControlGate;
@@ -816,78 +640,19 @@ class MeasurementGate extends GateNode {
         return new ComplexMatrix(blankMatrix);
     }
 }
-/*
- * This class represents a draggable gate that the user can use to set up the circuit
- */
-class DraggableGate {
-    private VBox v;
 
-    public DraggableGate(String gateType, Image img) {
-        v = new VBox();
-        Text t = new Text(" << " + gateType + " >> ");
-        ImageView preview = new ImageView(img);
-        v.setOnDragDetected(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent arg0) {
-                //begins a drag and drop with the gate
-                //info about the drag and drop procedure can be found at https://docs.oracle.com/javase/8/javafx/events-tutorial/drag-drop.htm#CHDJFJDH 
-                Dragboard db = preview.startDragAndDrop(TransferMode.COPY);
-
-                //put the gatetype into the drag's data
-                ClipboardContent content = new ClipboardContent();
-                content.putString(gateType);
-                db.setContent(content);
-
-                arg0.consume();
-            }
-        });
-        v.getChildren().addAll(t,preview);
-        v.setAlignment(Pos.TOP_CENTER);
-        v.setBackground(new Background(new BackgroundImage(QuantumComputerEmulator.backgroundImage, null,null, null, null)));
-    }
-
-    public VBox getVBox() {
-        return v;
-    }
-
-}
-/*
- * This class visualizes the connection between qubits, sometimes representing a full gate.
- */
-class Connector {
-    private ImageView view;
-
-    public Connector() {
-        view = new ImageView(QuantumComputerEmulator.connectionIcons[0]);
-    }
-
-    public ImageView getView() {
-        return view;
-    }
-
-    public void showConnection() {
-        view.setImage(QuantumComputerEmulator.connectionIcons[1]);
-    }
-    public void hideConnection() {
-        view.setImage(QuantumComputerEmulator.connectionIcons[0]);
-    }
-
-    public void setImage(Image img) {
-        view.setImage(img);
-    }
-}
 /*
  * This class can be used to create buttons to clear a specified column in the quantum circuit, in case the user messes up
  */
 class Clearer {
     private Button b;
 
-    public Clearer(int col, ArrayList<ArrayList<GateNode>> nodes, ArrayList<ArrayList<Connector>> connectors, ArrayList<Boolean> hasControlGate, ArrayList<Integer> numReferences) {
+    public Clearer(int col, QCEInterface qce) {
         b = new Button("Clear");
         b.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                QuantumComputerEmulator.clearColumn(col, nodes, connectors, hasControlGate, numReferences);   
+                qce.clearColumn(col);   
             }
         });
     }

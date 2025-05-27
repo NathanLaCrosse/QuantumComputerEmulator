@@ -24,8 +24,10 @@ public class App extends Application {
                 MatrixCalculatorApp.matrixCalculator(primaryStage);
                 break;
             default:
-                QuantumComputerEmulator.build(primaryStage, this);
+                QuantumComputerEmulator q = new QuantumComputerEmulator(primaryStage, this);
                 break;
         }
+
+        in.close();
     }
 }

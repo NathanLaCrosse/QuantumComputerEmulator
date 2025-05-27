@@ -3,6 +3,13 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "QuantumComputerEmulator",
+			"request": "launch",
+			"mainClass": "QuantumComputerEmulator",
+			"projectName": "QuantumComputerEmulator_c71eb9f3"
+		},
+		{
+			"type": "java",
 			"name": "BinaryHelper",
 			"request": "launch",
 			"mainClass": "RealNumberPackage.BinaryHelper",

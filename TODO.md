@@ -1,0 +1,3 @@
+ - custom 1 qubit gates cause an error
+ - unitary matrix detection for custom gates
+ - better placeholder texture?
