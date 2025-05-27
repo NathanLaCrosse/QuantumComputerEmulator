@@ -1,5 +1,8 @@
 import java.util.Scanner;
 
+import ComplexNumberPackage.ComplexCalculator;
+import ComplexNumberPackage.ComplexNumber;
+
 public class SimpleComplexNumberMenu {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);

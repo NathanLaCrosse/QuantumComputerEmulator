@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import ComplexNumberPackage.ComplexMatrix;
+import ComplexNumberPackage.ComplexNumber;
 import RealNumberPackage.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -48,7 +50,7 @@ import javafx.stage.Stage;
  */
 
 public class QuantumComputerEmulator {
-    public static Image gupImage, backgroundImage, addNewImage, defaultIcon;
+    public static Image backgroundImage, addNewImage, defaultIcon;
     public static Image[] seperatingLines;
 
     public final static int NUM_GATE_NODES = 5; // default is 5
@@ -95,7 +97,6 @@ public class QuantumComputerEmulator {
 
     public static void build(Stage primaryStage, Application a) throws Exception {
         addNewImage = new Image(a.getClass().getResourceAsStream("Images/addNew.png"));
-        gupImage = new Image(a.getClass().getResourceAsStream("gup.jpg"));
         backgroundImage = new Image(a.getClass().getResourceAsStream("Images/greySquare.png"));
         defaultIcon = new Image(a.getClass().getResourceAsStream("Images/F2Icon.png"));
 
