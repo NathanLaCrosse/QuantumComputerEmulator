@@ -17,8 +17,6 @@ import javafx.scene.text.Text;
  * This class represents a draggable gate that the user can use to set up the circuit
  */
 public class DraggableGate {
-    public static Image backgroundImage = SpriteLoader.initializeConstantImage("src/EmulatorApplicationHelpers/Sprites/greySquare.png");
-
     private VBox v;
 
     public DraggableGate(String gateType, Image img) {
@@ -42,7 +40,7 @@ public class DraggableGate {
         });
         v.getChildren().addAll(t,preview);
         v.setAlignment(Pos.TOP_CENTER);
-        v.setBackground(new Background(new BackgroundImage(backgroundImage, null,null, null, null)));
+        v.setBackground(new Background(new BackgroundImage(SpriteLoader.backgroundImage, null,null, null, null)));
     }
 
     public VBox getVBox() {
