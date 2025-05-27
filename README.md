@@ -27,4 +27,4 @@ There is one final step: telling the Java runtime where the sdk is located. Open
 
 ![tutorial4](https://github.com/user-attachments/assets/f683f7d5-938f-4174-a896-211b6b0e847b)
 
-That's it! Try running the program - an application after a moment. 
+That's it! Try running the App.java file - an application should open after a moment. 
